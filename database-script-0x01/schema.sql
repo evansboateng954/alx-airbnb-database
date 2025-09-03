@@ -23,16 +23,39 @@ CREATE TABLE property (
 
 CREATE TABLE booking (
   booking_id CHAR(50) PRIMARY KEY,
+  user_id CHAR(50) NOT NULL,
+  property_id CHAR(50) NOT NULL,
   start_date DATE NOT NULL,
-  end_date: DATE NOT NULL,
+  end_date DATE NOT NULL,
   total_price DECIMAL(10, 3) NOT NULL,
   status ENUM ('pending', 'confirmed', 'canceled') NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES user(user_id)
+  FOREIGN KEY (user_id) REFERENCES user(user_id),
   FOREIGN KEY (property_id) REFERENCES property(property_id));
 
 CREATE TABLE payment (
   payment_id CHAR(50) PRIMARY KEY,
+  booking_id CHAR(50) NOT NULL,
   amount DECIMAL(10, 3) NOT NULL,
   payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (booking_id) REFERENCES booking(booking_id));
+
+CREATE TABLE review (
+  review_id CHAR(50) PRIMARY KEY,
+  property_id CHAR(50) NOT NULL,
+  user_id CHAR(50) NOT NULL,
+  rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (property_id) REFERENCES property(property_id),
+  FOREIGN KEY (user_id) REFERENCES user(user_id));
+
+
+CREATE TABLE messages (
+  message_id CHAR(50) PRIMARY KEY,
+  sender_id CHAR(50) NOT NULL,
+  recipient_id CHAR(50) NOT NULL,
+  message_body TEXT NOT NULL,
+  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP.
+  FOREIGN KEY (sender_id) REFERENCES property(user_id),
+  FOREIGN KEY (recipient_id) REFERENCES user(user_id));
